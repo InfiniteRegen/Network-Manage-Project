@@ -1,7 +1,7 @@
 /*
 	Week8_PCAP_Programming
 	201423044
-	SeungHwan-Lee 
+	SeungHwan-Lee
 */
 #include "capture.h"
 
@@ -61,7 +61,7 @@ void do_traffic_analysis(unsigned char *pktData)
 	 	net_ip_count++;
 		do_ip_traffic_analysis(pktData) ;
 	}
-	else			
+	else
 		net_etc_count++;
 }
 
@@ -110,9 +110,9 @@ void display_IP(unsigned char *pktData)
 
 
 	if(iph->protocol == IP_PROTO_TCP)
-		display_TCP(pktData);	
+		display_TCP(pktData);
 	else if(iph->protocol == IP_PROTO_UDP)
-		display_UDP(pktData);	
+		display_UDP(pktData);
 	else
 		printf("LAYER-4 : ETC");
 
@@ -122,7 +122,7 @@ void display_ETHER(unsigned char *pktData)
 {
 	eth_header *ether=(eth_header *)(pktData);
 
-	printf("[MAC] %02x:%02x:%02x:%02x:%02x;%02x -> %02x:%02x:%02x:%02x:%02x;%02x\n", 
+	printf("[MAC] %02x:%02x:%02x:%02x:%02x;%02x -> %02x:%02x:%02x:%02x:%02x;%02x\n",
 			ether->srcMac.addr1,
 			ether->srcMac.addr2,
 			ether->srcMac.addr3,
@@ -160,10 +160,10 @@ void determine_max_min_persec(long *currentTime, int last)
 	static short 	pktCountPerSec=0;
 	static long		prevTime=0;
 	static short	init_s=0;
-	
+
 	if(prevTime==0)
 		prevTime = *currentTime;
-	
+
 	++pktCountPerSec;
 	if( *currentTime != prevTime || last==1 )
 	{// if time moves to next second or it is last packet.
@@ -202,14 +202,17 @@ void makeStat()
 		if(init_time==0) init_time = chdr.ts.tv_sec;
 		determine_max_min_persec(&(chdr.ts.tv_sec), 0);
 		fread(pktData, sizeof(unsigned char), chdr.caplen, fin);
+
 		display_packet_information(pktData);
 		do_traffic_analysis(pktData);
+
 		i++;
 	}
+
 	determine_max_min_persec(&(chdr.ts.tv_sec), 1);
 	last_time = chdr.ts.tv_sec; // assign a last time.
 	total_time = last_time - init_time;
-	printf("TOTAL TIME : %d\n", total_time);
+	printf("TOTAL TIME : %ld\n", total_time);
 
 	fclose(fin);
 
@@ -217,26 +220,25 @@ void makeStat()
 	printf("#Total number of packets : %d\n\n", i);
 
 	printf("    [ NETWORK-LAYER INFORMATION ]\n\n");
-	printf("1] IP     packets: %.2f%\n", (net_ip_count/(float)i)*100);
-	printf("2] non-IP packets: %.2f%\n\n", (net_etc_count/(float)i)*100);
-	
+	printf("1] IP     packets: %.2f\n", (net_ip_count/(float)i)*100);
+	printf("2] non-IP packets: %.2f\n\n", (net_etc_count/(float)i)*100);
+
 	trans_packet = trans_tcp_count + trans_udp_count + trans_etc_count;
 	printf("    [ TRANSPORT-LAYER INFORMATION ]\n\n");
+
 	if(trans_packet <= 0)
 	{
 		printf("#[DEBUG Msg] transport layer protocol was not detected.\n");
 	}else{
-		printf("1] TCP packets: %.2f%\n", (trans_tcp_count/(float)trans_packet)*100);
-		printf("2] UDP packets: %.2f%\n", (trans_udp_count/(float)trans_packet)*100);
-		printf("3] OTH packets: %.2f%\n", (trans_etc_count/(float)trans_packet)*100);
+		printf("1] TCP packets: %.2f\n", (trans_tcp_count/(float)trans_packet)*100);
+		printf("2] UDP packets: %.2f\n", (trans_udp_count/(float)trans_packet)*100);
+		printf("3] OTH packets: %.2f\n", (trans_etc_count/(float)trans_packet)*100);
 	}
-	
+
 	printf("    [ PACKETS PER SECONDS ]\n\n");
 	printf("1] Average packet per second: %.2f\n", i/(float)total_time);
-	printf("2] Maximum packet per second: %d\n", maxPerSec);
-	printf("3] Minimum packet per second: %d\n", minPerSec);
+	printf("2] Maximum packet per second: %lu\n", maxPerSec);
+	printf("3] Minimum packet per second: %lu\n", minPerSec);
 	printf("=====================================\n");
 	return;
 }
-
-
