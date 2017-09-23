@@ -1,8 +1,3 @@
-/*
-	Week8_PCAP_Programming
-	201423044
-	SeungHwan-Lee
-*/
 #include "capture.h"
 
 #include <pcap.h>
@@ -20,9 +15,9 @@
 #define ETHERTYPE_IP		0x0800
 #define ETH_II_HSIZE		14		// frame size of ethernet v2
 #define ETH_802_HSIZE		22		// frame size of IEEE 802.3 ethernet
-#define	RTPHDR_LEN			12		// Length of basic RTP header
-#define CSRCID_LEN			4		// CSRC ID length
-#define	EXTHDR_LEN			4		// Extension header length
+#define	RTPHDR_LEN		12		// Length of basic RTP header
+#define CSRCID_LEN		4		// CSRC ID length
+#define	EXTHDR_LEN		4		// Extension header length
 
 unsigned long	net_ip_count;
 unsigned long	net_etc_count;
@@ -36,18 +31,20 @@ unsigned long	minPerSec;
 void do_ip_traffic_analysis(unsigned char *pktData)
 {
 	unsigned char ip_ver, ip_hdr_len, ip_proto;
-	int	ip_offset=14;
+	int	ip_offset = 14;
 
-	ip_ver 	= pktData[ip_offset]>>4;		// IP version
+	ip_ver 	        = pktData[ip_offset] >> 4;	// IP version
 	ip_hdr_len 	= pktData[ip_offset] & 0x0f ;	// IP header length
-	ip_proto 	= pktData[ip_offset + 9];		// protocol above IP
+	ip_proto 	= pktData[ip_offset + 9];	// protocol above IP
 
 	if ( ip_proto == IP_PROTO_UDP )
 		trans_udp_count++;
 	else if ( ip_proto == IP_PROTO_TCP )
-		 trans_tcp_count++;
+		trans_tcp_count++;
 	else
-		 trans_etc_count++;
+		trans_etc_count++;
+	
+	return;
 }
 
 void do_traffic_analysis(unsigned char *pktData)
@@ -63,6 +60,8 @@ void do_traffic_analysis(unsigned char *pktData)
 	}
 	else
 		net_etc_count++;
+	
+	return;
 }
 
 void display_TCP(unsigned char *pktData)
@@ -73,9 +72,10 @@ void display_TCP(unsigned char *pktData)
 	printf("%d\n", pktData[36] <<8 | pktData[37]);
 	printf("Seq Number: %u \n", pntoh32(&pktData[38]));
 	printf("Ack Number: %u \n", pntoh32(&pktData[42]));
-	printf("flag: %X\n", pktData[44] & 0x3F); // use 6 bits
+	printf("Flag: %X\n", pktData[44] & 0x3F); // use 6 bits
 	printf("Window: : %u \n", pntoh16(&pktData[45]));
-	printf("checkSum: : %u\n", pntoh16(&pktData[46]));
+	printf("CheckSum: : %u\n", pntoh16(&pktData[46]));
+	
 	return;
 }
 
@@ -85,8 +85,9 @@ void display_UDP(unsigned char *pktData)
 
 	printf("[PORT] %u --> ", pktData[34] <<8| pktData[35]);
 	printf("%u\n", pktData[36] <<8 | pktData[37]);
-	printf("length: %u \n", pntoh16(&pktData[38]));
-	printf("checkSum: %u \n", pntoh16(&pktData[40]));
+	printf("Length: %u \n", pntoh16(&pktData[38]));
+	printf("CheckSum: %u \n", pntoh16(&pktData[40]));
+	
 	return;
 }
 
@@ -98,13 +99,14 @@ void display_IP(unsigned char *pktData)
 	src.sin_addr.s_addr = iph->srcAddr;
 	dst.sin_addr.s_addr = iph->dstAddr;
 
-	printf(" Version: %d\n", iph->VR_HL >> 4);
-	printf(" Header Length: %d\n", iph->VR_HL & 0xF );
+	printf(" Version: %d\n", (int)(iph->version));
+	printf(" Header Length: %d\n", (int)(iph->headerLength));
 	printf(" Tos: %d\n", iph->Tos );
 	printf(" length of Total: %d\n", iph->length );
 	printf(" identification: %d\n", iph->id );
 	printf(" TTL: %d\n", iph->TTL );
-	printf(" Header checksum: %d\n", iph->Hchecksum );
+	printf(" Header checksum: %d\n", iph->checksum );
+	
 	printf("[IP] %s -> ", inet_ntoa(src.sin_addr));
 	printf("%s \n", inet_ntoa(dst.sin_addr));
 
@@ -144,54 +146,51 @@ void display_packet_information(unsigned char *pktData)
 {
 	eth_header *ether=(eth_header *)(pktData);
 	printf("===========================\n");
-
-		display_ETHER(pktData);
-	if ( ether->type == 0x0008 )
-		display_IP(pktData); // index of 0~13 is already used.
-
+	display_ETHER(pktData);
+	if ( ether->type == 0x0008 )  display_IP(pktData); // index of 0~13 is already used.
 	printf("===========================\n");
 
-
+        return;
 }
 
 /* determine max/min packets per second. */
 void determine_max_min_persec(long *currentTime, int last)
 {
 	static short 	pktCountPerSec=0;
-	static long		prevTime=0;
+	static long	prevTime=0;
 	static short	init_s=0;
 
 	if(prevTime==0)
 		prevTime = *currentTime;
 
 	++pktCountPerSec;
+	
 	if( *currentTime != prevTime || last==1 )
 	{// if time moves to next second or it is last packet.
 		prevTime = *currentTime;
-		if(maxPerSec < pktCountPerSec)
-			maxPerSec = pktCountPerSec;
-		else if(minPerSec > pktCountPerSec)
-			minPerSec = pktCountPerSec;
+		
+		if(maxPerSec < pktCountPerSec)  maxPerSec = pktCountPerSec;
+		else if(minPerSec > pktCountPerSec)  minPerSec = pktCountPerSec;
 
-		if(init_s==0){
+		if(init_s==0) {
 			minPerSec = pktCountPerSec;
 			init_s=1;
 		}
+		
 		pktCountPerSec = 0;
 	}
-
 	return;
 }
 
 void makeStat()
 {
 	struct pcap_file_header	fhdr;
-	struct pcap_pkthdr 		chdr;
-	unsigned char			pktData[262144];
-	FILE					*fin;
-	int						i=0;
-	int						trans_packet;
-	long					init_time=0, last_time=0, total_time; // represented by a second.
+	struct pcap_pkthdr      chdr;
+	unsigned char		pktData[262144];
+	FILE			*fin;
+	int			i=0;
+	int			trans_packet;
+	long			init_time=0, last_time=0, total_time; // represented by a second.
 
 	fin = fopen(pktFileName, "rb");
 
@@ -223,9 +222,9 @@ void makeStat()
 	printf("1] IP     packets: %.2f\n", (net_ip_count/(float)i)*100);
 	printf("2] non-IP packets: %.2f\n\n", (net_etc_count/(float)i)*100);
 
-	trans_packet = trans_tcp_count + trans_udp_count + trans_etc_count;
 	printf("    [ TRANSPORT-LAYER INFORMATION ]\n\n");
-
+        
+	trans_packet = trans_tcp_count + trans_udp_count + trans_etc_count;
 	if(trans_packet <= 0)
 	{
 		printf("#[DEBUG Msg] transport layer protocol was not detected.\n");
