@@ -1,16 +1,11 @@
-/*
-	Week8_PCAP_Programming
-	201423044
-	SeungHwan-Lee 
-*/
 #include "capture.h"
 
 void cappkt_save (u_char *user, const struct pcap_pkthdr *h, const u_char *p)
 {
 	// display packet header information
-	printf("(%4d) clen=%3d, len=%4d \r",cpkNum++,h->caplen,h->len);
+	printf("(%4d) clen=%3d, len=%4d \r", cpkNum++, h->caplen, h->len);
 
-	// store captured packet with WinPcap packet header
+	// store captured packet with LibPcap packet header
 	pcap_dump(user, h, p);
 
 	// check termination
@@ -22,4 +17,8 @@ void cappkt_save (u_char *user, const struct pcap_pkthdr *h, const u_char *p)
 		pcap_dump_close(pd);
 		exit(0);
 	}
+
+	return;
 }
+
+/* More codes will be added */
