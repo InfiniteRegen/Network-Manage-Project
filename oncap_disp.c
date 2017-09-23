@@ -1,33 +1,27 @@
-/*
-	Week8_PCAP_Programming
-	201423044
-	SeungHwan-Lee 
-*/
 #include "capture.h"
 
 void packet_info (u_char *user, const struct pcap_pkthdr *h, const u_char *p)
 {
 	int 			i, ipos=0;	// counters
-	unsigned short 	type;		// type field in ethernet frame
+	unsigned short 	        type;		// type field in ethernet frame
 	double 			crnt_t;		// current time
 
 	// set initial time
-	if ( cpkNum == 0 ) 
-		init_t = (double)h->ts.tv_sec + 0.000001*h->ts.tv_usec;
+	if ( cpkNum == 0 )  init_t = (double)h->ts.tv_sec + 0.000001*h->ts.tv_usec;
 
-    if(user)
-		pcap_dump(user, h, p);
+        if(user)  pcap_dump(user, h, p);
 
 	/* set color */
-
 	if((type=p[12]<<8 | p[13]) == 0x0800)	
 	{
-		setcolor(YELLO);
-		if(p[23]==IP_PROTO_TCP)			setcolor(BLUE);
-		else if(p[23]==IP_PROTO_UDP)			setcolor(PURPLE);
-	}else								setcolor(RED);
+		if(p[23]==IP_PROTO_TCP)  setcolor(BLUE);
+		else if(p[23]==IP_PROTO_UDP)  setcolor(PURPLE);
+		else  setcolor(YELLO);
+	}else
+		setcolor(RED);
 
-     //printf("(%4d) clen=%3d, len=%4d \r",cpkNum++,h->caplen,h->len);
+        //printf("(%4d) clen=%3d, len=%4d \r",cpkNum++,h->caplen,h->len);
+	
 	// current time compared to the initial time
 	crnt_t = (double)h->ts.tv_sec + 0.000001*h->ts.tv_usec;
 	printf("%9.4f: [",crnt_t-init_t);
@@ -59,25 +53,20 @@ void packet_info (u_char *user, const struct pcap_pkthdr *h, const u_char *p)
 	
 	printf("\n");
 	setcolor(RESET_BG);
-    // store captured packet with WinPcap packet header
-    
-
-
-	//if ( cpkNum++ > MAXPKT ) {
-
+   
 	cpkNum++;
 
 	if ( cpkNum == maxPkt ) 
 	{
-    	setcolor(RESET_BG);
+    	        setcolor(RESET_BG);
 
 		// close all devices and files
 		pcap_close(adhandle);
         	
-        	if(user){
+        	if(user) {
         		pcap_dump_close((pcap_dumper_t *)user);
-				makeStat();
-			}
+			makeStat();
+		}
 
 		exit(0);
 	}
