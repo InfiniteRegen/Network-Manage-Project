@@ -1,8 +1,3 @@
-/*
-	Week8_PCAP_Programming
-	201423044
-	SeungHwan-Lee 
-*/
 #include "capture.h"
 
 int setcolor(char *color)
