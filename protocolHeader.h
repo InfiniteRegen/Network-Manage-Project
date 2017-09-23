@@ -1,9 +1,5 @@
-/*
-	Week8_PCAP_Programming
-	201423044
-	SeungHwan-Lee 
-*/
 #pragma once
+
 #include "capture.h"
 
 /********** [LAYER 2] ************/
@@ -17,23 +13,24 @@ typedef struct mac_address{
 }mac_addr;
 
 typedef struct ethernet_header{
-		mac_addr		dstMac;
-		mac_addr		srcMac;
-		u_short			type; // if type is 0x0800, upper layer is IP.
+		mac_addr  dstMac; // 6 bytes(e.g. FF:FF:FF:FF:FF:FF)
+		mac_addr  srcMac; // 6 bytes(e.g. FF:FF:FF:FF:FF:FF)
+		u_short   type;   // When type field is 0x0800, upper layer is IP.
 }eth_header;
 
 /********** [LAYER 3] ************/
 typedef struct ipv4_header{
-		u_char	VR_HL;	// left-most 4 bits : Version, right-most 4 bits : header Length
-		u_char	Tos;	// Type of Service (TOS)
-		u_short	length;	// Total Length;
-		u_short	id;		// identification
-		u_short	Fragment;// fragment offset
-		u_char	TTL;	// time to live
-		u_char	protocol;//protocol
-		u_short	Hchecksum;// Header checksum
-		u_int	srcAddr;	// source ip address.
-		u_int	dstAddr;	// destination ip address.
+		u_char	version:4;      // Only 4 bits used for version field
+		u_char  headerLength:4  // Only 4 bits used for header length
+		u_char	Tos;	        // Type of Service (TOS)
+		u_short	length;	        // Total Length;
+		u_short	id;	        // Identification
+		u_short	Fragment;       // Fragment offset
+		u_char	TTL;	        // Time to live
+		u_char	protocol;       // Protocol
+		u_short	Hchecksum;      // Header checksum
+		u_int	srcAddr;        // Source ip address.
+		u_int	dstAddr;        // Destination ip address.
 }ip_header;
 
 
