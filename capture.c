@@ -1,8 +1,3 @@
-/*
-	Week8_PCAP_Programming
-	201423044
-	SeungHwan-Lee 
-*/
 #include "capture.h"
 
 int main(int argc, char** argv)
@@ -15,7 +10,7 @@ int main(int argc, char** argv)
 	int					i;			// for general use
 	int					ndNum=0;	// number of network devices
 	int					devNum;		// device Id used for online packet capture
-    pcap_dumper_t       *pd;        // dump file pointer
+        pcap_dumper_t       *pd;        // dump file pointer
 
 	cpkNum = 0;
 
@@ -64,7 +59,7 @@ int main(int argc, char** argv)
 			return -1;
 	}
 
-	 /* Retrieve the device list */
+    /* Retrieve the device list */
     if (pcap_findalldevs(&alldevs, errbuf) == -1)
     {
         fprintf(stderr,"Error in pcap_findalldevs: %s\n", errbuf);
@@ -125,11 +120,12 @@ int main(int argc, char** argv)
     pcap_freealldevs(alldevs);
     pd = NULL;
     if(fileOption==true)
-	{
-		pd = pcap_dump_open( adhandle, pktFileName);
-		pcap_loop(adhandle, -1, packet_info, (u_char *)pd) ;
-	}else{
- 		pcap_loop(adhandle, -1, packet_info, NULL) ;
-	}
-	return 0;
+    {
+	pd = pcap_dump_open(adhandle, pktFileName);
+	pcap_loop(adhandle, -1, packet_info, (u_char *)pd) ;
+    }else{
+ 	pcap_loop(adhandle, -1, packet_info, NULL) ;
+    }
+
+    return 0;
 }
