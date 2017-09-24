@@ -45,7 +45,7 @@ void checkIpAddress(unsigned char *pktData, char *targetAddr)
 	struct sockaddr_in src, dst;
 
 	src.sin_addr.s_addr = iph->srcAddr;
-  dst.sin_addr.s_addr = iph->dstAddr;
+	dst.sin_addr.s_addr = iph->dstAddr;
 
 	char *srcAddr = inet_ntoa(src.sin_addr);
 	char *dstAddr = inet_ntoa(dst.sin_addr);
