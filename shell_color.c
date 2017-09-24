@@ -1,4 +1,4 @@
-#include "capture.h"
+#include "main.h"
 
 int setcolor(char *color)
 {

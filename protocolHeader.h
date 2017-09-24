@@ -1,6 +1,6 @@
 #pragma once
 
-#include "capture.h"
+#include "main.h"
 
 /********** [LAYER 2] ************/
 typedef struct mac_address{

@@ -1,4 +1,4 @@
-#include "capture.h"
+#include "main.h"
 
 #include <pcap.h>
 #include <stdio.h>
@@ -43,7 +43,7 @@ void do_ip_traffic_analysis(unsigned char *pktData)
 		trans_tcp_count++;
 	else
 		trans_etc_count++;
-	
+
 	return;
 }
 
@@ -60,7 +60,7 @@ void do_traffic_analysis(unsigned char *pktData)
 	}
 	else
 		net_etc_count++;
-	
+
 	return;
 }
 
@@ -75,7 +75,7 @@ void display_TCP(unsigned char *pktData)
 	printf("Flag: %X\n", pktData[44] & 0x3F); // use 6 bits
 	printf("Window: : %u \n", pntoh16(&pktData[45]));
 	printf("CheckSum: : %u\n", pntoh16(&pktData[46]));
-	
+
 	return;
 }
 
@@ -87,7 +87,7 @@ void display_UDP(unsigned char *pktData)
 	printf("%u\n", pktData[36] <<8 | pktData[37]);
 	printf("Length: %u \n", pntoh16(&pktData[38]));
 	printf("CheckSum: %u \n", pntoh16(&pktData[40]));
-	
+
 	return;
 }
 
@@ -106,7 +106,7 @@ void display_IP(unsigned char *pktData)
 	printf(" identification: %d\n", iph->id );
 	printf(" TTL: %d\n", iph->TTL );
 	printf(" Header checksum: %d\n", iph->checkSum );
-	
+
 	printf("[IP] %s -> ", inet_ntoa(src.sin_addr));
 	printf("%s \n", inet_ntoa(dst.sin_addr));
 
@@ -164,11 +164,11 @@ void determine_max_min_persec(long *currentTime, int last)
 		prevTime = *currentTime;
 
 	++pktCountPerSec;
-	
+
 	if( *currentTime != prevTime || last==1 )
 	{// if time moves to next second or it is last packet.
 		prevTime = *currentTime;
-		
+
 		if(maxPerSec < pktCountPerSec)  maxPerSec = pktCountPerSec;
 		else if(minPerSec > pktCountPerSec)  minPerSec = pktCountPerSec;
 
@@ -176,7 +176,7 @@ void determine_max_min_persec(long *currentTime, int last)
 			minPerSec = pktCountPerSec;
 			init_s=1;
 		}
-		
+
 		pktCountPerSec = 0;
 	}
 	return;
@@ -202,7 +202,7 @@ void makeStat()
 		determine_max_min_persec(&(chdr.ts.tv_sec), 0);
 		fread(pktData, sizeof(unsigned char), chdr.caplen, fin);
 
-		display_packet_information(pktData);
+		//display_packet_information(pktData);
 		do_traffic_analysis(pktData);
 
 		i++;
@@ -223,7 +223,7 @@ void makeStat()
 	printf("2] non-IP packets: %.2f\n\n", (net_etc_count/(float)i)*100);
 
 	printf("    [ TRANSPORT-LAYER INFORMATION ]\n\n");
-        
+
 	trans_packet = trans_tcp_count + trans_udp_count + trans_etc_count;
 	if(trans_packet <= 0)
 	{

@@ -19,6 +19,7 @@
 #define MAXPKT          	2000    // maximum number of stored packets
 
 #define FILE_NAME_MAX 		100		// The name of pkt file.
+#define MAX_LOG_LENGTH    10000 // max length of ip-detection log
 
 /* [CONSOLE BACKGROUND COLOR SET] */
 #define RED		"bash -c 'echo -e \"\\033[41m\"'"
@@ -44,6 +45,8 @@ typedef int bool;	// it is just for c language.
 void packet_info (u_char *user, const struct pcap_pkthdr *h, const u_char *p); // call back function (disp)
 int setcolor(char *color);	// set command prompt's background color
 void makeStat();	// make Statistics information from designated pkt file.
+void checkIpAddress(unsigned char* pktData, char *targerAddr);
+void LogIpDetection(char *fileName, char *logData, int isExit);
 
 
 /* Global Variables */

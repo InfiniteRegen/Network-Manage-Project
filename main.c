@@ -1,4 +1,4 @@
-#include "capture.h"
+#include "main.h"
 
 void DieWithError(char *errMsg, char *fileName)
 {
@@ -17,7 +17,7 @@ int main(int argc, char** argv)
 	int i;		// for general use
 	int ndNum=0;	// number of network devices
 	int devNum;	// device Id used for online packet capture
-        
+
 	pcap_dumper_t *pd;  // dump file pointer
 
 	cpkNum = 0;  // Initialize global variable
@@ -52,7 +52,7 @@ int main(int argc, char** argv)
 			break;
 		default:
 			DieWithError("there is no such option! check it again please.\n", *argv);
-				
+
 	}
 
     /* Retrieve the device list */
@@ -61,7 +61,7 @@ int main(int argc, char** argv)
         fprintf(stderr,"Error in pcap_findalldevs: %s\n", errbuf);
         exit(1);
     }
-    
+
     /* Print the list */
     for(d=alldevs; d; d=d->next)
     {
@@ -72,18 +72,18 @@ int main(int argc, char** argv)
             printf(" (No description available)\n");
 
     }
-    
+
     /* error ? */
     if(ndNum==0)
     {
         printf("\nNo interfaces found! Make sure WinPcap is installed.\n");
         return -1;
     }
-    
+
     /* select device for online packet capture application */
     printf("Enter the interface number (1-%d):", ndNum);
     scanf("%d", &devNum);
-    
+
     /* select error ? */
     if(devNum < 1 || devNum > ndNum)
     {
@@ -92,7 +92,7 @@ int main(int argc, char** argv)
         pcap_freealldevs(alldevs);
         return -1;
     }
-    
+
     /* Jump to the selected adapter */
     for(d=alldevs, i=0; i< devNum-1 ;d=d->next, i++);
 
@@ -111,17 +111,17 @@ int main(int argc, char** argv)
     }
 
     printf("\nselected device %s is available\n\n", d->description);
-    
+
     /* At this point, we don't need any more the device list. Free it */
     pcap_freealldevs(alldevs);
     pd = NULL;
 
     if(fileOption==true)
     {
-	pd = pcap_dump_open(adhandle, pktFileName);
-	pcap_loop(adhandle, -1, packet_info, (u_char *)pd) ;
+	       pd = pcap_dump_open(adhandle, pktFileName);
+	       pcap_loop(adhandle, -1, packet_info, (u_char *)pd) ;
     }else{
- 	pcap_loop(adhandle, -1, packet_info, NULL) ;
+ 	       pcap_loop(adhandle, -1, packet_info, NULL) ;
     }
 
     return 0;
