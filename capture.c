@@ -1,8 +1,8 @@
 #include "capture.h"
 
-void DieWithError(char *errMsg)
+void DieWithError(char *errMsg, char *fileName)
 {
-  printf("usage: %s [-f] [pktFileName.pkt] [-t] [number of max packet]\n", argv[0]);
+  printf("usage: %s [-f] [pktFileName.pkt] [-t] [number of max packet]\n", fileName);
   perror(errMsg);
   exit(-1);
 }
@@ -34,7 +34,7 @@ int main(int argc, char** argv)
 			}else if(!strcmp(argv[1], "-t")) {
 				maxPkt = atoi(argv[2]);
 			}else {
-				DieWithError("there is no such option! check it again please.\n")
+				DieWithError("there is no such option! check it again please.\n", *argv);
 			}
 			break;
 		case 5: // case of two options
@@ -47,11 +47,12 @@ int main(int argc, char** argv)
 				fileOption = true;
 				maxPkt = atoi(argv[2]);
 			}else {
-				DieWithError("there is no such option! check it again please.\n")
+				DieWithError("there is no such option! check it again please.\n", *argv);
 			}
 			break;
 		default:
-			DieWithError("there is no such option! check it again please.\n")
+			DieWithError("there is no such option! check it again please.\n", *argv);
+				
 	}
 
     /* Retrieve the device list */

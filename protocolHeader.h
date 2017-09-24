@@ -21,14 +21,14 @@ typedef struct ethernet_header{
 /********** [LAYER 3] ************/
 typedef struct ipv4_header{
 		u_char	version:4;      // Only 4 bits used for version field
-		u_char  headerLength:4  // Only 4 bits used for header length
+		u_char  headerLength:4; // Only 4 bits used for header length
 		u_char	Tos;	        // Type of Service (TOS)
 		u_short	length;	        // Total Length;
 		u_short	id;	        // Identification
 		u_short	Fragment;       // Fragment offset
 		u_char	TTL;	        // Time to live
 		u_char	protocol;       // Protocol
-		u_short	Hchecksum;      // Header checksum
+		u_short	checkSum;      // Header checksum
 		u_int	srcAddr;        // Source ip address.
 		u_int	dstAddr;        // Destination ip address.
 }ip_header;

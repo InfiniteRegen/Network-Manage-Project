@@ -105,7 +105,7 @@ void display_IP(unsigned char *pktData)
 	printf(" length of Total: %d\n", iph->length );
 	printf(" identification: %d\n", iph->id );
 	printf(" TTL: %d\n", iph->TTL );
-	printf(" Header checksum: %d\n", iph->checksum );
+	printf(" Header checksum: %d\n", iph->checkSum );
 	
 	printf("[IP] %s -> ", inet_ntoa(src.sin_addr));
 	printf("%s \n", inet_ntoa(dst.sin_addr));
