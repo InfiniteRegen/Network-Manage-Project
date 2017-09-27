@@ -20,7 +20,8 @@ void packet_info (u_char *user, const struct pcap_pkthdr *h, const u_char *p)
 		if(p[23]==IP_PROTO_TCP)  setcolor(BLUE);
 		else if(p[23]==IP_PROTO_UDP)  setcolor(PURPLE);
 		else  setcolor(YELLO);
-	}else  setcolor(RED);
+	}else
+		setcolor(RED);
 
   //printf("(%4d) clen=%3d, len=%4d \r",cpkNum++,h->caplen,h->len);
 
@@ -39,7 +40,7 @@ void packet_info (u_char *user, const struct pcap_pkthdr *h, const u_char *p)
 	for ( i=0; i<6; i++)    printf("%02x%s",p[i+6],i==5 ? "->" : ":") ;
 
 	// destination MAC address
-	for ( i=0;i<6;i++)   printf("%02x%s",p[i],i==5? "]": ":");
+	for ( i=0; i<6; i++)   printf("%02x%s",p[i],i==5? "]": ":");
 
 	// IP datagram
 	if ( (type=p[12]<<8 | p[13]) == 0x0800 )
@@ -67,17 +68,14 @@ void packet_info (u_char *user, const struct pcap_pkthdr *h, const u_char *p)
 
 	if ( cpkNum == maxPkt )
 	{
-    setcolor(RESET_BG);
-
+                setcolor(RESET_BG);
 		// close all devices and files
 		pcap_close(adhandle);
-
-    if(user)
+                if(user)
 		{
-      pcap_dump_close((pcap_dumper_t *)user);
+                        pcap_dump_close((pcap_dumper_t *)user);
 			makeStat();
 		}
-
 		exit(0);
 	}
 }
