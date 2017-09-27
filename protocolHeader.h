@@ -34,6 +34,12 @@ typedef struct ipv4_header{
 }ip_header;
 
 
+/********** [RAW] ************/
+typedef struct icmp_header{
+// will be changed
+
+}
+
 /********** [LAYER 4] ************/
 typedef struct tcp_header{
 		u_short		srcPort;// source port nubmer
