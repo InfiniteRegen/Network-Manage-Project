@@ -41,7 +41,11 @@
 - EditArea
 >https://www.cdolivet.com/editarea/
 - SweetAlert
- ### apt-get install -y 
+> apt-get install -y openssh-server
+> apt-get install -y sshpass
+> apt-get install -y nodejs
+> apt-get install -y nodejs-legacy
+> apt-get install -y libmysqlclient-dev
 ---
 # Commit Record
 - 100 commit : **2017.10.01** by <img src="https://avatars1.githubusercontent.com/u/7951335?v=4&s=15"> <a href = "https://github.com/jaejunha"> jaejunha </a>
